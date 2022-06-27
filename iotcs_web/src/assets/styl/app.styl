@@ -1,0 +1,253 @@
+@import './element.styl'
+
+body,html
+    width:100%;
+    height:100%;
+    font-size:15px;
+    overflow-x: hidden
+*
+    margin:0;
+    padding:0;
+    list-style:none;
+i,em,b
+    font-style:normal;
+    font-weight:normal;
+input,textarea,select
+    -webkit-appearance:none;
+    border:0;
+    background:transparent;
+button,input,input[type=button]:focus
+    overflow visible
+    outline none
+    border 0
+    -webkit-tap-highlight-color:rgba(0,0,0,0)
+input,a,span
+    -webkit-tap-highlight-color:rgba(0,0,0,0);
+a
+    text-decoration none
+    color #666
+#app
+    display:-webkit-box;
+    -webkit-box-orient:vertical;
+    height:100%;
+
+.display-enter,.display-leave-active
+    opacity: 0
+.display-enter-active,.display-leave
+    transition: all .5s ease
+    -moz-transition: all .5s ease
+    -webkit-transition: all .5s ease
+    -o-transition: all .5s ease
+
+
+// login
+.login
+    height 100%
+    background-color #f7f4f4
+    position relative
+    .model
+        position absolute
+        top 45%
+        left 75%
+        background-color #fff
+        border-radius 8px
+        transform: translate(-50%, -50%)
+        // box-shadow: 0 0 10px #ddd
+        .box
+            width 350px
+            padding 10px
+            min-height 200px
+    .el-form
+        width 280px
+        margin 0 auto
+        button
+            width 100%
+            margin-top: 17px
+    h3
+        color: #6b6b6b
+        font-weight: 400
+        font-size: 16px
+        text-align: center
+        margin: 15px auto 35px
+.layout
+    width 100%
+    height 100%
+    position relative
+    .left
+        width 200px
+        position fixed
+        top 0
+        left 0
+        bottom 0
+        overflow-y: auto
+        transition all .3s
+        .logo
+            height: 40px
+            width: 120px
+            background: url('./../../assets/images/IOTCS.png')no-repeat 50%/contain
+            // background-color: #9898ce;
+            cursor: pointer
+            position: fixed
+            margin-left: 26px
+            margin-top: 15px
+            top: 0
+        .logo_s
+            background: url('./../../assets/images/logo.png') no-repeat 50%/contain
+            margin-top 7px
+            width 65px
+            margin-left 0
+        .menu
+            position: fixed
+            top: 70px
+            left: 0
+            bottom: 0
+            width: 202px
+            color: #FFF 
+    .el-menu-demo
+        background-color: unset;
+    .el-submenu__title
+        color: #FFF
+    .el-menu-item:hover
+        //background-color: rgb(50,115,242);
+    .el-submenu__title:hover,
+    .el-menu-item
+        background-color: rgb(50,115,242);
+        color:#FFF
+    .el-menu-item.is-active
+        color:#FFF
+    .el-menu-item i,
+    .el-submenu__title i
+        color: #FFF
+
+
+    .l-close
+        width 65px
+    .right
+        // padding-left 200px
+        background-color: #F0F0F0
+        height 100%
+        transition all .3s
+        position fixed
+        top 0
+        right 0
+        bottom 0
+        left 200px
+        .view-head
+            height 55px
+            line-height 55px
+            background-color #fff
+            padding 0 10px
+        .el-icon-s-fold,.el-icon-s-unfold
+            font-size 30px
+            cursor pointer
+            position: relative
+            top: 6px
+        .userbox
+            float right
+            vertical-align: middle;
+            position relative;
+            height 100%
+            transition: all 0.3s
+            .dropdown
+                position absolute
+                top 69px
+                right 0
+                width 116px
+                box-shadow: 0 0 10px #ddd;
+                text-align center
+                background-color: #fff;
+                z-index 99
+                cursor pointer
+                display none
+                p
+                    height: 40px;
+                    line-height: 40px;
+                    font-size: 14px;
+                    color: #666;
+                    border-bottom: 1px solid #f2f2f2;
+                    &:hover
+                        background-color: #ecf5ff;
+                        color: #66b1ff;
+            &:hover
+                background: rgba(222,222,222,.1)
+                .dropdown
+                    display block
+            .avatar
+                display: inline-block;
+                vertical-align: middle;
+                width: 40px;
+                height: 40px;
+                border: 2px solid #ddd;
+                margin: 10px 10px 0 0;
+                cursor: pointer;
+            .userName
+                margin-top: 5px;
+                padding: 0 10px;
+                display: inline-block;
+                vertical-align: middle;
+                font-size: 17px;
+                color: #FFF
+        .view-nav
+            background-color: #fff
+            margin: 5px 10px
+            padding: 7px 10px
+            border-radius: 4px;
+            height: 40px;
+        .view-con
+            // height: 100%
+            background-color: #fff
+            margin: 5px 10px 10px 10px;
+            border-radius: 4px;
+            box-shadow: 0 0 10px #ddd;
+            padding: 10px;
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            left: 0;
+            top: 114px;
+            overflow-y: auto;
+    .r-close
+        left: 65px;
+
+.avatar
+    width: 100px;
+    height: 100px;
+    border-radius: 100%;
+    border: 4px solid #ddd
+    background: url('./../../assets/images/author.png') no-repeat 50%/80%;
+    display: block;
+    margin: 30px auto;
+.userName
+    font-size 20px
+    cursor pointer
+    color #409EFF
+    text-align: center;
+.el-dialog__header
+	background-color rgba(220, 227, 232,.5);
+
+/*在谷歌下移除input[number]的上下箭头*/
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button {
+  -webkit-appearance: none !important;
+  margin: 0;
+}
+/*谷哥滚动条样式*/
+
+::-webkit-scrollbar {width:15px;height:15px; position:absolute}
+::-webkit-scrollbar-thumb {background-color:#eee;border-radius: 10px;}
+::-webkit-scrollbar-track {background-color:transparent}
+
+/***/
+
+/*在firefox下移除input[number]的上下箭头*/
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+input::-webkit-input-safebox-button {
+  display: none;
+}
+
+
+
+

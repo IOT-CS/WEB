@@ -1,0 +1,17 @@
+1、OPCUA查询接口：121.199.164.252:9001/opc/data/get
+insert/delete/update  增删改
+2、分组列表查询接口：121.199.164.252:9001/grouplist/data/get
+insert/delete/update  增删改
+3、设备查询接口：121.199.164.252:9001/equipment/data/getAllEquipments【根据分组ID查询设备】
+insert/delete/update  增删改
+4、点位查询接口：121.199.164.252:9001/datalocation/data/getAllNodes【根据设备ID查询点位】
+insert/delete/update  增删改
+
+1、OPCUA查询接口：121.199.164.252:9001/opc/data/get
+insert/delete/update  增删改
+2、分组列表查询接口：121.199.164.252:9001/grouplist/data/get
+insert/delete/update  增删改
+3、设备查询接口：121.199.164.252:9001/equipment/data/getEquipment【根据分组ID查询设备】/getAllEquipments【获取所有设备】
+insert/delete/update  增删改
+4、点位查询接口：121.199.164.252:9001/datalocation/data/getNode【根据设备ID查询点位】 /getAllNodes【获取所有点位】
+insert/delete/update  增删改
