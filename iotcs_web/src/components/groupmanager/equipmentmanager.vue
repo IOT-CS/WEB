@@ -1,7 +1,7 @@
 <template>
 	<div class="div_group">
-		<el-button size="small" icon="el-icon-plus" title="添加" @click="addDeviceGroup">添加设备组
-		</el-button>
+		<!-- <el-button size="small" icon="el-icon-plus" title="添加" @click="addDeviceGroup">添加设备组
+		</el-button> -->
 		<el-button size="small" icon="el-icon-plus" title="添加" @click="addDevice">添加设备
 		</el-button>
 		<div class="div_groupTables">
@@ -26,11 +26,12 @@
 				<el-table-column prop="CreateTime" label="创建时间" sortable width="180"></el-table-column>
 				<el-table-column fixed="right" label="设备参数" width="120" align="center">
 					<template slot-scope="scope" >
-						<el-button type="text" @click="handleDeviceConfig(scope.$index, scope.row)" v-if="scope.row.ParentId !='' && scope.row.ParentId!= null"  icon="el-icon-edit" size="mini" style="color: rgb(64,158,255);">详情</el-button>
+						<el-button type="text" @click="handleDeviceConfig(scope.$index, scope.row)" v-if="scope.row.ParentId =='' || scope.row.ParentId== null"  icon="el-icon-edit" size="mini" style="color: rgb(64,158,255);">详情</el-button>
 					</template>
 				</el-table-column>
 				<el-table-column fixed="right" label="操作" width="240" align="center">
 					<template slot-scope="scope">
+						<el-button type="text" @click="addDeviceGroup(scope.$index, scope.row)" v-if="scope.row.ParentId =='' || scope.row.ParentId== null"  icon="el-icon-circle-plus-outline" size="mini" style="color: green; font-size:14px">新增Group</el-button>
 						<el-button type="text" @click="handleEdit(scope.$index, scope.row)"   icon="el-icon-edit" size="mini" style="color: rgb(64,158,255); font-size:14px">编辑</el-button>
 						<el-button type="text" @click="handleDelete(scope.$index, scope.row)" icon="el-icon-delete" size="mini" style="color: rgb(247,137,137); font-size:14px">删除</el-button>
 					</template>
@@ -52,18 +53,21 @@
 			<el-form :model="formData" :rules="rules" label-position="left" ref="formDeviceGroup" label-width="120px"
 				style="margin: 0 30px;" class="demo-form">
 				
-				<el-form-item label="设备组名称" prop="DeviceName">
+				<el-form-item label="Group名称" prop="DeviceName">
 					<el-input v-model="formData.DeviceName" ></el-input>
 				</el-form-item>
 				<el-form-item label="采集周期(ms)" prop="Duration">
 					<el-input v-model="formData.Duration" ></el-input>
+				</el-form-item>
+				<el-form-item label="Topic" prop="Topic"> 
+					<el-input v-model="formData.Topic" ></el-input>
 				</el-form-item>
 				<el-form-item label=" 描述" prop="Description">
 					<el-input v-model="formData.Description" ></el-input>
 				</el-form-item>
 
 				<el-form-item>
-					<el-button type="primary" @click="submitForm('formDeviceGroup')">确定</el-button>
+					<el-button type="primary" @click="submitGroup('formDeviceGroup')">确定</el-button>
 					<el-button @click="closeDialog">取消</el-button>
 				</el-form-item>
 			</el-form>
@@ -80,19 +84,16 @@
 			</div>
 			<el-form :model="formData" :rules="rules" label-position="left" ref="formDevice" label-width="120px"
 				style="margin: 0 30px;" class="demo-form">
-				<el-form-item label="父级" prop="ParentId">
+				<!-- <el-form-item label="父级" prop="ParentId">
 					<el-select v-model="formData.ParentId" placeholder="请选择" style="width:100%">
 						<el-option v-for="item in DeviceGroup" :key="item.Id" :label="item.DeviceGroupName"
 							:value="item.Id"></el-option>
 					</el-select>
-				</el-form-item>
-
-				<el-form-item label="Topic" prop="Topic"> 
-					<el-input v-model="formData.Topic" ></el-input>
-				</el-form-item>
+				</el-form-item> -->
 				<el-form-item label="设备名称" prop="DeviceName">
 					<el-input v-model="formData.DeviceName" ></el-input>
 				</el-form-item>
+				
 				<el-form-item label="驱动名称" prop="DriveId">
 					<el-select v-model="formData.DriveId" placeholder="请选择" style="width:100%">
 						<el-option v-for="item in DrivesName" :key="item.Id" :label="item.DriveName"
@@ -133,6 +134,135 @@
 				</el-form-item>
 			</el-form>
 		</el-dialog>
+
+
+		<!-- SIEMENS-S7 -->
+		<el-dialog :visible.sync="dialogSIEMENSS7DeviceConfigVisible" v-dialogdrag :append-to-body="true"  width="520px"
+			:modal-append-to-body="false" :close-on-click-modal="false" :close-on-press-escape="false"
+			>
+			<div slot="title" class="header-title">
+				<span v-html="dialogTitle"></span>
+			</div>
+			<el-form :model="SIEMENSS7DeviceConfig"  :rules="rules" label-position="left" ref="formSIEMENSS7DeviceConfig" label-width="120px"
+				style="margin: 0 30px;" class="demo-form">
+				
+				<el-form-item label="IP地址" prop="IPAddress">
+					<el-input v-model="SIEMENSS7DeviceConfig.IPAddress"></el-input>
+				</el-form-item>
+				<el-form-item label="端口" prop="Port">
+					<el-input v-model="SIEMENSS7DeviceConfig.Port"></el-input>
+				</el-form-item>
+				<el-form-item label="卡槽" prop="SLOT">
+					<el-input v-model="SIEMENSS7DeviceConfig.SLOT"></el-input>
+				</el-form-item>
+				<el-form-item label="超时时间" prop="TimeOut">
+					<el-input v-model="SIEMENSS7DeviceConfig.TimeOut"></el-input>
+				</el-form-item>
+				<el-form-item>
+					<el-button type="primary" @click="submitSIEMENSS7ConfigForm('formSIEMENSS7DeviceConfig')">确定</el-button>
+					<el-button @click="closeDialog">取消</el-button>
+				</el-form-item>
+			</el-form>
+		</el-dialog>
+
+		<!-- ModBus设备参数设置 -->
+		<el-dialog :visible.sync="dialogModBusTcpDeviceConfigVisible" v-dialogdrag :append-to-body="true"  width="520px"
+			:modal-append-to-body="false" :close-on-click-modal="false" :close-on-press-escape="false"
+			>
+			<div slot="title" class="header-title">
+				<span v-html="dialogTitle"></span>
+			</div>
+			<el-form :model="modbusTcpUdpDeviceConfig"  :rules="rules" label-position="left" ref="formModBusTcpDeviceConfig" label-width="120px"
+				style="margin: 0 30px;" class="demo-form">
+				
+				<el-form-item label="名称" prop="Name">
+					<el-input v-model="modbusTcpUdpDeviceConfig.Name"></el-input>
+				</el-form-item>
+				<el-form-item label="Host" prop="Host">
+					<el-input v-model="modbusTcpUdpDeviceConfig.Host"></el-input>
+				</el-form-item>
+				<el-form-item label="Port" prop="Port">
+					<el-input v-model="modbusTcpUdpDeviceConfig.Port"></el-input>
+				</el-form-item>
+				<el-form-item label="超时(ms)" prop="TimeOut">
+					<el-input v-model="modbusTcpUdpDeviceConfig.TimeOut"></el-input>
+				</el-form-item>
+				<el-form-item label="方法" prop="Method">
+					<el-select v-model="modbusTcpUdpDeviceConfig.Method">
+						<el-option v-for="item in modbusTcpUdpMethods" :key="item.name" :label="item.name"
+							:value="item.name"></el-option>
+					</el-select>
+				</el-form-item>
+				<el-form-item label="ByteOrder" prop="ByteOrder">
+					<el-input v-model="modbusTcpUdpDeviceConfig.ByteOrder"></el-input>
+				</el-form-item>
+				<el-form-item>
+					<el-button type="primary" @click="submitModBusTcpUdpConfigForm('formModBusTcpDeviceConfig')">确定</el-button>
+					<el-button @click="closeDialog">取消</el-button>
+				</el-form-item>
+			</el-form>
+		</el-dialog>
+
+		<!-- ModBus_Rtu设备参数设置 -->
+		<el-dialog :visible.sync="dialogModBusRTUDeviceConfigVisible" v-dialogdrag :append-to-body="true"  width="520px"
+			:modal-append-to-body="false" :close-on-click-modal="false" :close-on-press-escape="false"
+			>
+			<div slot="title" class="header-title">
+				<span v-html="dialogTitle"></span>
+			</div>
+			<el-form :model="modbusRTUDeviceConfig"  :rules="rules" label-position="left" ref="formModBusRTUDeviceConfig" label-width="120px"
+				style="margin: 0 30px;" class="demo-form">
+				
+				<el-form-item label="名称" prop="Name">
+					<el-input v-model="modbusRTUDeviceConfig.Name"></el-input>
+				</el-form-item>
+				<el-form-item label="Port" prop="Port">
+					<el-input v-model="modbusRTUDeviceConfig.Port"></el-input>
+				</el-form-item>
+				<el-form-item label="Baudrate" prop="Baudrate">
+					<el-input v-model="modbusRTUDeviceConfig.Baudrate"></el-input>
+				</el-form-item>
+				<el-form-item label="StopBits" prop="StopBits">
+					<el-input v-model="modbusRTUDeviceConfig.StopBits"></el-input>
+				</el-form-item>
+				<el-form-item label="ByteSizes" prop="ByteSizes">
+					<el-select v-model="modbusRTUDeviceConfig.ByteSizes">
+						<el-option v-for="item in modbusRTUByteSizes" :key="item.name" :label="item.name"
+							:value="item.name"></el-option>
+					</el-select>
+				</el-form-item>
+				<el-form-item label="Parity" prop="Parity">
+					<el-select v-model="modbusRTUDeviceConfig.Parity">
+						<el-option v-for="item in modbusRTUParity" :key="item.name" :label="item.name"
+							:value="item.name"></el-option>
+					</el-select>
+				</el-form-item>
+				<el-form-item label="Strict" prop="Strict">
+					<el-input v-model="modbusRTUDeviceConfig.Strict"></el-input>
+				</el-form-item>
+				<el-form-item label="超时(ms)" prop="TimeOut">
+					<el-input v-model="modbusRTUDeviceConfig.TimeOut"></el-input>
+				</el-form-item>
+				<el-form-item label="方法" prop="Method">
+					<el-select v-model="modbusRTUDeviceConfig.Method">
+						<el-option v-for="item in modbusRTUMethods" :key="item.name" :label="item.name"
+							:value="item.name"></el-option>
+					</el-select>
+				</el-form-item>
+				<el-form-item label="ByteOrder" prop="ByteOrder">
+					<el-input v-model="modbusRTUDeviceConfig.ByteOrder"></el-input>
+				</el-form-item>
+				<el-form-item>
+					<el-button type="primary" @click="submitModBusRTUConfigForm('formModBusRTUDeviceConfig')">确定</el-button>
+					<el-button @click="closeDialog">取消</el-button>
+				</el-form-item>
+			</el-form>
+		</el-dialog>
+
+
+
+
+
 	</div>
 </template>
 
@@ -150,10 +280,41 @@
 				dialogFormVisible: false,
 				dialogDeviceGroupVisible:false,
 				dialogOpcDeviceConfigVisible:false,
+				dialogModBusTcpDeviceConfigVisible:false,
+				dialogModBusRTUDeviceConfigVisible:false,
+				dialogSIEMENSS7DeviceConfigVisible:false,
+				deivceGroupInfo:{
+					ParentId:''
+				},
 				dialogTitle: "",
 				opcDeviceConfig:{
-					Duration:"",
 					OPCAddr:""
+				},
+				modbusTcpUdpDeviceConfig:{
+					Name:"",
+					Host:"",
+					Port:"",
+					TimeOut:"",
+					Method:"",
+					ByteOrder:""
+				},
+				modbusRTUDeviceConfig:{
+					Name:"",
+					Method:"",
+					Port:"",
+					Baudrate:"",
+					StopBits:"",
+					ByteSizes:"",
+					Parity:"",
+					Strict:"",
+					TimeOut:"",
+					ByteOrder:""
+				},
+				SIEMENSS7DeviceConfig:{
+					IPAddress:"",
+					Port:"",
+					SLOT:"",
+					TimeOut:""
 				},
 				formData: {
 					Id:"",
@@ -165,6 +326,12 @@
 					DeviceType:"",
 					ParentId:""
 				},
+				modbusTcpUdpMethods:[
+					{name:"Socket"},{name:"RTU"}
+				],
+				modbusRTUMethods:[{name:"RTU"},{name:"Ascii"}],
+				modbusRTUByteSizes:[{name:"5"},{name:"6"},{name:"7"},{name:"8"}],
+				modbusRTUParity:[{name:"E"},{name:"O"},{name:"N"}],
 				formType: "",
 				rules: {
 					Topic: [{
@@ -417,11 +584,14 @@
 				this.equipmentList[0].children.push(newChild);
 				this.spotList = [];
 			},
+			addGroup(index,row){
+
+			},
 			handleEdit(index, row) {
 				this.formData = row;
 				this.formType = "edit";
 				this.dialogTitle = "编辑分组";
-				if(row.DeviceType == 0){
+				if(row.DeviceType == 1){
 					this.dialogDeviceGroupVisible = true;
 				}else{
 					this.dialogFormVisible = true;
@@ -448,6 +618,62 @@
 								this.opcDeviceConfig= JSON.parse(res.Data.ConfigJson);
 								this.opcDeviceConfig.Id=res.Data.Id;
 								this.opcDeviceConfig.DeviceId= res.Data.DeviceId;
+								this.formType = "edit";
+							}
+						}else if(res.Data.DriveType == "ModbBus-TCP/UDP"){
+								this.dialogModBusTcpDeviceConfigVisible = true;
+							if(res.Data.ConfigJson == null){
+								this.modbusTcpUdpDeviceConfig.Id="";
+								this.modbusTcpUdpDeviceConfig.DeviceId=row.Id;
+								this.modbusTcpUdpDeviceConfig.Name="";
+								this.modbusTcpUdpDeviceConfig.Host="";
+								this.modbusTcpUdpDeviceConfig.Port="";
+								this.modbusTcpUdpDeviceConfig.TimeOut="";
+								this.modbusTcpUdpDeviceConfig.Method="";
+								this.modbusTcpUdpDeviceConfig.ByteOrder="";
+								this.formType = "add";
+							}else{
+								this.modbusTcpUdpDeviceConfig= JSON.parse(res.Data.ConfigJson);
+								this.modbusTcpUdpDeviceConfig.Id=res.Data.Id;
+								this.modbusTcpUdpDeviceConfig.DeviceId= res.Data.DeviceId;
+								this.formType = "edit";
+							}
+						}else if(res.Data.DriveType == "ModbBus-Serial"){
+							this.dialogModBusRTUDeviceConfigVisible = true;
+							if(res.Data.ConfigJson == null){
+								this.modbusRTUDeviceConfig.Id="";
+								this.modbusRTUDeviceConfig.DeviceId=row.Id;
+								this.modbusRTUDeviceConfig.Name="";
+								this.modbusRTUDeviceConfig.Baudrate="";
+								this.modbusRTUDeviceConfig.StopBits="";
+								this.modbusRTUDeviceConfig.ByteSizes="";
+								this.modbusRTUDeviceConfig.Parity="";
+								this.modbusRTUDeviceConfig.Strict="";
+								this.modbusRTUDeviceConfig.Port="";
+								this.modbusRTUDeviceConfig.TimeOut="";
+								this.modbusRTUDeviceConfig.Method="";
+								this.modbusRTUDeviceConfig.ByteOrder="";
+								this.formType = "add";
+							}else{
+								this.modbusRTUDeviceConfig= JSON.parse(res.Data.ConfigJson);
+								this.modbusRTUDeviceConfig.Id=res.Data.Id;
+								this.modbusRTUDeviceConfig.DeviceId= res.Data.DeviceId;
+								this.formType = "edit";
+							}
+						}else if(res.Data.DriveType == "SIEMENS-S7"){
+							this.dialogSIEMENSS7DeviceConfigVisible = true;
+							if(res.Data.ConfigJson == null){
+								this.SIEMENSS7DeviceConfig.Id="";
+								this.SIEMENSS7DeviceConfig.DeviceId=row.Id;
+								this.SIEMENSS7DeviceConfig.IPAddress="";
+								this.SIEMENSS7DeviceConfig.Port="";
+								this.SIEMENSS7DeviceConfig.SLOT="";
+								this.SIEMENSS7DeviceConfig.TimeOut="";
+								this.formType = "add";
+							}else{
+								this.SIEMENSS7DeviceConfig= JSON.parse(res.Data.ConfigJson);
+								this.SIEMENSS7DeviceConfig.Id=res.Data.Id;
+								this.SIEMENSS7DeviceConfig.DeviceId= res.Data.DeviceId;
 								this.formType = "edit";
 							}
 						}
@@ -509,7 +735,7 @@
 				console.log(ev);
 			},
 			convertInUse(row,column){
-				if(row.DeviceType == 0){
+				if(row.DeviceType == 1){
 					return '';
 				}
 				if(row.InUse == 0){
@@ -553,6 +779,159 @@
 				})
 			},
 
+
+			submitModBusTcpUdpConfigForm(formName){
+				this.$refs[formName].validate(valid => {
+					if (valid) {
+					if(this.formType == "add"){
+					this.$post("device/config/insert",{Id:this.getUUID(),
+													DeviceId:this.modbusTcpUdpDeviceConfig.DeviceId,
+													ConfigJson:JSON.stringify({Name:this.modbusTcpUdpDeviceConfig.Name,
+																			   Host:this.modbusTcpUdpDeviceConfig.Host,
+																			   Port:this.modbusTcpUdpDeviceConfig.Port,
+																			   TimeOut:this.modbusTcpUdpDeviceConfig.TimeOut,
+																			   Method:this.modbusTcpUdpDeviceConfig.Method,
+																			   ByteOrder:this.modbusTcpUdpDeviceConfig.ByteOrder})}).then(res => {
+								if (res.Successful) {
+									//this.initData();
+									this.closeDialog(); 
+									this.$Message.success({message: "数据配置成功！", duration: 800});
+								} else {
+									this.$Message.error({message:res.ErrorMessage, duration: 800});
+								}
+							});
+
+				}else{
+							this.$post("device/config/update",{Id:this.modbusTcpUdpDeviceConfig.Id,
+													DeviceId:this.modbusTcpUdpDeviceConfig.DeviceId,
+													ConfigJson:JSON.stringify({Name:this.modbusTcpUdpDeviceConfig.Name,
+																			   Host:this.modbusTcpUdpDeviceConfig.Host,
+																			   Port:this.modbusTcpUdpDeviceConfig.Port,
+																			   TimeOut:this.modbusTcpUdpDeviceConfig.TimeOut,
+																			   Method:this.modbusTcpUdpDeviceConfig.Method,
+																			   ByteOrder:this.modbusTcpUdpDeviceConfig.ByteOrder})}).then(res => {
+								if (res.Successful) {
+									//this.initData();
+									this.closeDialog(); 
+									this.$Message.success({message: "数据配置成功！", duration: 800});
+								} else {
+									this.$Message.error({message:res.ErrorMessage, duration: 800});
+								}
+							});
+				}
+					}
+								
+				})
+			},
+
+
+			submitSIEMENSS7ConfigForm(formName){
+				this.$refs[formName].validate(valid => {
+					if (valid) {
+					if(this.formType == "add"){
+					this.$post("device/config/insert",{Id:this.getUUID(),
+													DeviceId:this.SIEMENSS7DeviceConfig.DeviceId,
+													ConfigJson:JSON.stringify({IPAddress:this.SIEMENSS7DeviceConfig.IPAddress,
+																			   Port:this.SIEMENSS7DeviceConfig.Port,
+																			   TimeOut:this.SIEMENSS7DeviceConfig.TimeOut,
+																			   SLOT:this.SIEMENSS7DeviceConfig.SLOT})}).then(res => {
+								if (res.Successful) {
+									//this.initData();
+									this.closeDialog(); 
+									this.$Message.success({message: "数据配置成功！", duration: 800});
+								} else {
+									this.$Message.error({message:res.ErrorMessage, duration: 800});
+								}
+							});
+
+				}else{
+							this.$post("device/config/update",{Id:this.SIEMENSS7DeviceConfig.Id,
+													DeviceId:this.SIEMENSS7DeviceConfig.DeviceId,
+													ConfigJson:JSON.stringify({IPAddress:this.SIEMENSS7DeviceConfig.IPAddress,
+																			   Port:this.SIEMENSS7DeviceConfig.Port,
+																			   TimeOut:this.SIEMENSS7DeviceConfig.TimeOut,
+																			   SLOT:this.SIEMENSS7DeviceConfig.SLOT})}).then(res => {
+								if (res.Successful) {
+									//this.initData();
+									this.closeDialog(); 
+									this.$Message.success({message: "数据配置成功！", duration: 800});
+								} else {
+									this.$Message.error({message:res.ErrorMessage, duration: 800});
+								}
+							});
+				}
+					}
+								
+				})
+			},
+
+
+
+			submitModBusRTUConfigForm(formName){
+				this.$refs[formName].validate(valid => {
+					if (valid) {
+					if(this.formType == "add"){
+					this.$post("device/config/insert",{Id:this.getUUID(),
+													DeviceId:this.modbusRTUDeviceConfig.DeviceId,
+													ConfigJson:JSON.stringify({Name:this.modbusRTUDeviceConfig.Name,
+																			   Baudrate:this.modbusRTUDeviceConfig.Baudrate,
+																			   StopBits:this.modbusRTUDeviceConfig.StopBits,
+																			   ByteSizes:this.modbusRTUDeviceConfig.ByteSizes,
+																			   Parity:this.modbusRTUDeviceConfig.Parity,
+																			   Strict:this.modbusRTUDeviceConfig.Strict,
+																			   Port:this.modbusRTUDeviceConfig.Port,
+																			   TimeOut:this.modbusRTUDeviceConfig.TimeOut,
+																			   Method:this.modbusRTUDeviceConfig.Method,
+																			   ByteOrder:this.modbusRTUDeviceConfig.ByteOrder})}).then(res => {
+								if (res.Successful) {
+									//this.initData();
+									this.closeDialog(); 
+									this.$Message.success({message: "数据配置成功！", duration: 800});
+								} else {
+									this.$Message.error({message:res.ErrorMessage, duration: 800});
+								}
+							});
+
+				}else{
+							this.$post("device/config/update",{Id:this.modbusTcpUdpDeviceConfig.Id,
+													DeviceId:this.modbusTcpUdpDeviceConfig.DeviceId,
+													ConfigJson:JSON.stringify({Name:this.modbusTcpUdpDeviceConfig.Name,
+																			   Host:this.modbusTcpUdpDeviceConfig.Host,
+																			   Port:this.modbusTcpUdpDeviceConfig.Port,
+																			   TimeOut:this.modbusTcpUdpDeviceConfig.TimeOut,
+																			   Method:this.modbusTcpUdpDeviceConfig.Method,
+																			   ByteOrder:this.modbusTcpUdpDeviceConfig.ByteOrder})}).then(res => {
+								if (res.Successful) {
+									//this.initData();
+									this.closeDialog(); 
+									this.$Message.success({message: "数据配置成功！", duration: 800});
+								} else {
+									this.$Message.error({message:res.ErrorMessage, duration: 800});
+								}
+							});
+				}
+					}
+								
+				})
+			},
+			submitGroup(formName){
+				this.$refs[formName].validate(valid => {
+						if (valid) {
+							this.formData.Id = this.getUUID();
+							this.formData.ParentId = this.deivceGroupInfo.ParentId;
+							this.formData.DeviceType=1;
+							this.$post("device/data/insert", this.formData).then(res => {
+								if (res.Successful) {
+									this.initData();
+									this.closeDialog(); 
+									this.$Message.success({message: "数据配置成功！", duration: 800});
+								} else {
+									this.$Message.error({message:res.ErrorMessage, duration: 800});
+								}
+							});
+						}
+				})
+			},
 			submitForm(formName) {
 				this.$refs[formName].validate(valid => {
 					if (valid) {
@@ -564,14 +943,7 @@
 
 						if (this.formType == "add") {
 							this.formData.Id = this.getUUID();
-							this.formData.GroupId = this.getUUID();
-
-							//设备组|设备
-							if(formName == "formDevice"){
-								this.formData.DeviceType=1;
-							}else{
-								this.formData.DeviceType=0;
-							}
+							this.formData.DeviceType=0;
 
 							this.$post("device/data/insert", this.formData).then(res => {
 								if (res.Successful) {
@@ -606,6 +978,9 @@
 				this.dialogFormVisible = false;
 				this.dialogDeviceGroupVisible =false;
 				this.dialogOpcDeviceConfigVisible = false;
+				this.dialogModBusTcpDeviceConfigVisible = false;
+				this.dialogModBusRTUDeviceConfigVisible = false;
+				this.dialogSIEMENSS7DeviceConfigVisible = false;
 			},
 			closeDeviceGroupDialog(){
 				this.dialogOpcDeviceConfigVisible = false;
@@ -620,16 +995,18 @@
 				this.dialogFormVisible = true;
 				this.getDeviceGroup();
 			},
-			addDeviceGroup() {
+			addDeviceGroup(index,row) {
 				this.formData = {};
 				this.formType = "add";
-				this.dialogTitle = "创建设备组";
+				this.dialogTitle = "新建Group";
+				this.deivceGroupInfo.ParentId = row.Id;
 				this.dialogDeviceGroupVisible = true;
 			},
 			initData() {
 				this.$get("device/data/getAllDevice").then(res => {
 					if (res.Successful) {
 						this.groupList = res.Data;
+						console.log(this.groupList);
 						this.groupList.forEach(item=>{
 							item.children = item.Childrens;
 						})

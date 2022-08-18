@@ -54,6 +54,8 @@
               </el-table-column>
                <el-table-column prop="NodeLength" label="长度" align="center">
               </el-table-column>
+              <el-table-column prop="Attribute" label="特性" align="center">
+              </el-table-column>
               <el-table-column prop="Expressions" label="表达式" align="center">
               </el-table-column>
               <el-table-column prop="Source" label="原值" align="center">
@@ -120,12 +122,19 @@
         <el-form-item label="地址" prop="NodeAddress">
           <el-input v-model="formNodeData.NodeAddress"></el-input>
         </el-form-item>
+         <el-form-item label="特性" prop="Attribute">
+          <el-select v-model="formNodeData.Attribute" style="width:100%">
+            <el-option v-for="item in attributeList" :key="item.value" :label="item.text"
+								:value="item.value"></el-option>
+          </el-select>
+        </el-form-item>
         <el-form-item label="前戳" prop="NodePreStamp">
           <el-input v-model="formNodeData.NodePreStamp" placeholder="如西门子PLC:DB50"></el-input>
         </el-form-item>
         <el-form-item label="长度" prop="NodeLength">
           <el-input v-model="formNodeData.NodeLength"></el-input>
         </el-form-item>
+
          <el-form-item label="表达式" prop="Expressions">
           <el-input v-model="formNodeData.Expressions" placeholder="进行简单的计算,raw表示原值参与计算"></el-input>
         </el-form-item>
@@ -166,11 +175,29 @@ export default {
 						message: "地址不能为空",
 						trigger: "blur"
 					},{ min: 0, max: 50, message: '长度不能超过50字符', trigger: 'blur' }],
-          NodeLength:[{validator:this.isNum}]
+          NodeLength:[{validator:this.isNum}],
+           Attribute:[{
+            required: true,
+						message: "Attribute不能为空",
+						trigger: "blur"
+          }]
 				},
       formNodeData: {},
       groupList: [],
-
+      attributeList:[
+        {
+          text:"Read",
+          value:"Read"
+        },
+        {
+          text:"Write",
+          value:"Write"
+        },
+        {
+          text:"Read/Write",
+          value:"Read/Write"
+        }
+      ],
       spotList: [],
       dialogFormVisible: false,
       dynamicValidateFormModal: false,

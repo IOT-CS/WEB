@@ -225,7 +225,7 @@
 				return dateString;
 			},
 			convertInUse(row,column){
-				if(row.DeviceType == 0){
+				if(row.DeviceType == 1){
 					return'';
 				}
 				if(row.InUse == 0){

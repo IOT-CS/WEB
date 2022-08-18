@@ -118,6 +118,10 @@
             </el-table-column>
           </el-table>
         </div>
+        <el-form-item label="Body" style="width:100%;">
+					<el-input type="textarea" :rows="5" placeholder="请输入内容" resize="false" v-model="ResourceParams.Body">
+					</el-input>
+				</el-form-item>
     </el-form>
     <el-form>
       <el-form-item style="width: 200px;margin: 0 auto;" v-show="!isLook">

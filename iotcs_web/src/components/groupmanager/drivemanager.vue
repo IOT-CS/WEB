@@ -60,10 +60,23 @@
 				pagesize: 10, //    每页的数据
 				driveList: [],
 				dialogFormVisible: false,
-				driveType:[{
-					Id:"01",
-					driveType:"OPCUA"
-				}],
+				driveType:[
+					{
+						Id:"01",
+						driveType:"OPCUA"
+					},
+					{
+						Id:"02",
+						driveType:"ModbBus-TCP/UDP"
+					},
+					{
+						Id:"03",
+						driveType:"ModbBus-Serial"
+					},
+					{
+						Id:"04",
+						driveType:"SIEMENS-S7"
+					}],
 				formData: {
 					Id: "",
 					DriveName: "",
