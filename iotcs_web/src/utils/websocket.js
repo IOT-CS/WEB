@@ -35,7 +35,7 @@ socket.prototype.createConnection = function() {
 
 	if (this.serverURL == "") {
 		let tempUrl = this.ip + ':' + this.port;
-		this.serverURL = "ws://" + tempUrl;
+		this.serverURL = "ws://" + tempUrl + "/ws";
 	}
 	this.ws = new WebSocket(this.serverURL);
 
@@ -63,7 +63,7 @@ socket.prototype.createConnection = function() {
 	}
 
 	this.ws.onmessage = (e) => {
-		const response = JSON.parse(e.data)
+		const response = JSON.parse(e.data);
 		if (this.wsMessageCallback[response.RequestId]) {
 			this.wsMessageCallback[response.RequestId](response);
 		}
@@ -90,48 +90,50 @@ socket.prototype.createConnection = function() {
 				break;
 			case 'close':
 				this.closeConnection();
-				break;
-			case "pong":
-				this.pingpong = "pong";
-				this.disconnectCount = 0;
+			 	break;
+			// case "pong":
+			// 	this.pingpong = "pong";
+			// 	this.disconnectCount = 0;
+			// 	break;
+			case "No":
 				break;
 			default:
 				console.warn('unknown response type')
 				break
 		}
 	}
-	this.heartCheck();
+	//this.heartCheck();
 }
 
-socket.prototype.heartCheck = function() {
-	this.pingInterval = setInterval(() => {
-		this.pingpong = 'ping'; // ws的心跳机制状态值
-		if (this.connecting === true) {
-			this.wsRequest({
-				requestType: 'ping'
-			}); // 客户端发送ping
-		}
-	}, 5001);
-	this.pongInterval = setInterval(() => {
-		if (this.pingpong == 'ping') {
-			this.disconnectCount++;
-			if (this.disconnectCount > 2) {
-				if (this.pingInterval !== undefined && this.pongInterval !== undefined) {
-					clearInterval(this.pingInterval);
-					clearInterval(this.pongInterval);
-				}
-				this.connecting = false;
-				this.connectStatus = "服务端断开连接";
-				this.connectColor = "background-color:red;";
-				if (this.ws != undefined) {
-					//this.ws.close();
-					this.close();
-				}
-				this.createConnection(); //重新连接
-			}
-		}
-	}, 7501);
-}
+// socket.prototype.heartCheck = function() {
+// 	this.pingInterval = setInterval(() => {
+// 		this.pingpong = 'ping'; // ws的心跳机制状态值
+// 		if (this.connecting === true) {
+// 			this.wsRequest({
+// 				requestType: 'ping'
+// 			}); // 客户端发送ping
+// 		}
+// 	}, 5001);
+// 	this.pongInterval = setInterval(() => {
+// 		if (this.pingpong == 'ping') {
+// 			this.disconnectCount++;
+// 			if (this.disconnectCount > 2) {
+// 				if (this.pingInterval !== undefined && this.pongInterval !== undefined) {
+// 					clearInterval(this.pingInterval);
+// 					clearInterval(this.pongInterval);
+// 				}
+// 				this.connecting = false;
+// 				this.connectStatus = "服务端断开连接";
+// 				this.connectColor = "background-color:red;";
+// 				if (this.ws != undefined) {
+// 					//this.ws.close();
+// 					this.close();
+// 				}
+// 				this.createConnection(); //重新连接
+// 			}
+// 		}
+// 	}, 7501);
+// }
 
 //发送request 协议
 socket.prototype.wsRequest = function(obj, fn = null) {

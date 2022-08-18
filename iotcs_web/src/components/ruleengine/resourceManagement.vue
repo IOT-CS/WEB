@@ -324,7 +324,6 @@ export default {
           this.ResourceParams.MQTTTimeout = this.ResourceParams.MQTTTimeout === undefined ? '' : this.ResourceParams.MQTTTimeout
         }
         returnedTarget = Object.assign(this.formTypeData, this.ResourceParams);
-        
         if (!this.formData.Id) { 
           returnedTarget.Id = this.uuid();
         } else {
@@ -337,12 +336,12 @@ export default {
           ResourceParams: "",
           ResourceType: returnedTarget.ResourceType
         };
-        delete returnedTarget.ResourceName;
-        delete returnedTarget.ResourceType;
-        delete returnedTarget.Id;
+        // delete returnedTarget.ResourceName;
+        // delete returnedTarget.ResourceType;
+        // delete returnedTarget.Id;
         params.ResourceParams = JSON.stringify(returnedTarget);
+        // this.formTypeData.ResourceType =ResourceTypeTemp ;
 		if(test){
-       console.log(this.formTypeData.ResourceType)
 			this.$post("resource/data/test", params).then(res => {
 			  if (res.Successful) {
 			    this.$Message.success({message: "连接测试成功！", duration: 800});

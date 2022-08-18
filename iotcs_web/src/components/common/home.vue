@@ -1,11 +1,11 @@
 <template>
 	<div>
 		<el-row :gutter="20">
-			<el-col :span="12">
+			<el-col :span="24">
 				<div class="grid-content cont-top cont-left-top">
-					<div class="chartTitle"><i class="ti"></i>服务器性能</div>
+					<div class="chartTitle"><i class="ti"></i>网关配置</div>
 					<el-row :gutter="5">
-						<el-col :span="12">
+						<el-col :span="10">
 							<div class="grid-content">
 								<div id="gauge1"></div>
 								<div style="text-align: center;position:absolute;bottom: 76px;left:0;right:0">
@@ -13,38 +13,39 @@
 								</div>
 							</div>
 						</el-col>
-						<el-col :span="12">
+						<el-col :span="14">
 							<div class="grid-content">
-								<div id="gauge2">
+								<div id="gauge2" style="display:flex;">
 
-									<el-card class="box-card" shadow="never" style="width: 95%;height: 90%; text-align: center;">
+									<el-card class="box-card" shadow="never" style="height: 90%; text-align: center;flex:1;">
 										<!-- <div slot="header" class="clearfix">
 											<span>服务器状态信息</span>
 										</div> -->
-										<div style="margin-top: 30px;">
-											<el-row>
-												<el-col :span="12">
-													<el-progress type="circle" :stroke-width="15"
-														:percentage="Performance.CpuRate" :color="colors"></el-progress>
-														<el-tag type="success">CPU占有率</el-tag>
-												</el-col>
-												<el-col :span="12">
-													<el-progress type="circle" :stroke-width="15"
-														:percentage="Performance.MemoryRate" :color="colors">
-													</el-progress>
-													<el-tag type="success">内存占有率</el-tag>
-												</el-col>
-											</el-row>
+										<div class="chartTitle" style="top: 20px"><i class="ti"></i>服务器性能</div>
+										<div class="box-card-content">
+											<el-progress type="circle" :stroke-width="15" :percentage="Performance.CpuRate" :color="colors" class="circle" />
+											<el-tag type="success">CPU占有率</el-tag>
 										</div>
 										<div>
 											<ul>
 												<li id="unAv">
-													<el-progress :stroke-width="25" :percentage="100" :text-inside="true" color="#999"
-														:format="AvailableMemory"></el-progress>
+													<el-progress :stroke-width="25" :percentage="100" :text-inside="true" color="#999" :format="AvailableMemory" />
 												</li>
+											</ul>
+										</div>
+									</el-card>
+									<el-card class="box-card" shadow="never" style="height: 90%; text-align: center;flex:1;">
+										<!-- <div slot="header" class="clearfix">
+											<span>服务器状态信息</span>
+										</div> -->
+										<div class="box-card-content">
+											<el-progress type="circle" :stroke-width="15" :percentage="Performance.MemoryRate" :color="colors" class="circle" />
+											<el-tag type="success">内存占有率</el-tag>
+										</div>
+										<div>
+											<ul>
 												<li>
-													<el-progress :stroke-width="25" :percentage="100" :text-inside="true" :format="Memory">
-													</el-progress>
+													<el-progress :stroke-width="25" :percentage="100" :text-inside="true" :format="Memory" />
 												</li>
 											</ul>
 										</div>
@@ -53,24 +54,6 @@
 							</div>
 						</el-col>
 					</el-row>
-				</div>
-			</el-col>
-			<el-col :span="12">
-				<div class="grid-content cont-top cont-right-top">
-					<div class="chartTitle"><i class="ti"></i>驱动状态</div>
-					<div id="gauge3">
-						<el-table stripe :data="Connections" tooltip-effect="dark" max-height="250">
-							<el-table-column prop="OpcName" label="驱动名称"></el-table-column>
-							<el-table-column prop="OpcUrl" label="驱动地址"></el-table-column>
-							<el-table-column prop="ConnectTime" label="连接时间"></el-table-column>
-							<el-table-column prop="IsConnected" label="连接状态" width="180">
-								<template #default="scope">
-									<el-tag :type="scope.row.IsConnected === '已断开' ? 'danger' : 'success'"
-										disable-transitions>{{ scope.row.IsConnected }}</el-tag>
-								</template>
-							</el-table-column>
-						</el-table>
-					</div>
 				</div>
 			</el-col>
 		</el-row>
@@ -150,12 +133,6 @@
 					MemoryRate: 0,
 					UnAvMeRate:0,
 				},
-				Connections: [
-					// ConnectTime: "",
-					// IsConnected: "",
-					// OpcName: "",
-					// OpcUrl: ""
-				],
 				ResourceType: "HTML",
 				resourceType: [{
 					value: 'HTML',
@@ -187,16 +164,16 @@
 				this.Performance.CpuRate = Number((data.CpuRate * 100).toFixed(2));
 				this.Performance.MemoryRate = Number(((data.Memory - data.AvailableMemory) / data.Memory * 100).toFixed(2));
 				this.Performance.UnAvMeRate = Number((data.AvailableMemory / data.Memory * 100).toFixed(2));
-				var data1 = response.Connections;
-				this.Connections = [];
-				data1.forEach(item => {
-					this.Connections.push({
-						ConnectTime: this.transformTimestamp(item.ConnectTime),
-						IsConnected: item.IsConnected == true ? "已连接" : "已断开",
-						OpcName: item.OpcName,
-						OpcUrl: item.OpcUrl,
-					});
-				})
+				// var data1 = response.Connections;
+				// this.Connections = [];
+				// data1.forEach(item => {
+				// 	this.Connections.push({
+				// 		ConnectTime: this.transformTimestamp(item.ConnectTime),
+				// 		IsConnected: item.IsConnected == true ? "已连接" : "已断开",
+				// 		OpcName: item.OpcName,
+				// 		OpcUrl: item.OpcUrl,
+				// 	});
+				// })
 			}
 			this.initGroupData();
 		},
@@ -440,7 +417,7 @@
 
 	#gauge1 {
 		background: url(../../assets/images/device.png) no-repeat center center;
-		background-size: 85% auto;
+		background-size: 75% auto;
 		height: 100%;
 	}
 
@@ -502,4 +479,8 @@
 		right: 1.25rem;
 		top: 0.9375rem;
 	}
+	
+	.box-card-content{margin-top: 44px;display:flex;flex-direction:column;justify-content: center;}
+	.box-card-content .el-tag{margin: 30px 0 20px;}
+	.box-card-content .circle{display:flex;justify-content: center;}
 </style>

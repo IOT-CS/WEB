@@ -18,7 +18,7 @@
 				<el-table-column prop="DeviceName" label="名称"></el-table-column>
 				<el-table-column prop="Topic" label="Topic"></el-table-column>
 				<!-- <el-table-column prop="DriveType" label="驱动类型"></el-table-column> -->
-				<el-table-column prop="Duration" label="采集周期"></el-table-column>
+				<el-table-column prop="Duration" label="采集周期"  :formatter="convertDuration"></el-table-column>
 				<el-table-column prop="DriveName" label="驱动名称"></el-table-column>
 				<el-table-column prop="InUse" label="启用" :formatter="convertInUse" ></el-table-column>
 				<el-table-column prop="Description" label="描述"></el-table-column>
@@ -744,6 +744,12 @@
 					return "是";
 				}
 			},
+			convertDuration(row,column){
+				if(row.DeviceType == 0){
+					return '';
+				}
+				return row.Duration;
+			},
 			submitConfigForm(formName){
 				this.$refs[formName].validate(valid => {
 					if (valid) {
@@ -917,18 +923,34 @@
 			submitGroup(formName){
 				this.$refs[formName].validate(valid => {
 						if (valid) {
-							this.formData.Id = this.getUUID();
-							this.formData.ParentId = this.deivceGroupInfo.ParentId;
-							this.formData.DeviceType=1;
-							this.$post("device/data/insert", this.formData).then(res => {
-								if (res.Successful) {
-									this.initData();
-									this.closeDialog(); 
-									this.$Message.success({message: "数据配置成功！", duration: 800});
-								} else {
-									this.$Message.error({message:res.ErrorMessage, duration: 800});
-								}
-							});
+							if (this.formType == "add") 
+							{
+								this.formData.Id = this.getUUID();
+								this.formData.ParentId = this.deivceGroupInfo.ParentId;
+								this.formData.DeviceType=1;
+								this.$post("device/data/insert", this.formData).then(res => {
+									if (res.Successful) {
+										this.initData();
+										this.closeDialog(); 
+										this.$Message.success({message: "数据配置成功！", duration: 800});
+									} else {
+										this.$Message.error({message:res.ErrorMessage, duration: 800});
+									}
+								});
+							}
+							else
+							{
+								this.$post("device/data/update", this.formData).then(res => {
+									if (res.Successful) {
+										this.initData();
+										this.closeDialog(); 
+										this.$Message.success({message: "数据配置成功！", duration: 800});
+									} else {
+										this.$Message.error({message:res.ErrorMessage, duration: 800});
+									}
+								});
+
+							}
 						}
 				})
 			},

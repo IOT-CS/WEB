@@ -234,6 +234,7 @@
 						this.driveList = res.Data;
 						// this.$Message.success({message: "数据获取成功", duration: 800});
 					} else {
+						console.log(res);
 						this.$Message.error({message:res.ErrorMessage, duration: 800});
 					}
 				});

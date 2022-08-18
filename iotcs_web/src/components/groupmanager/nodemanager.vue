@@ -56,6 +56,8 @@
               </el-table-column>
               <el-table-column prop="Attribute" label="特性" align="center">
               </el-table-column>
+              <el-table-column prop="NodeType" label="类型" align="center">
+              </el-table-column>
               <el-table-column prop="Expressions" label="表达式" align="center">
               </el-table-column>
               <el-table-column prop="Source" label="原值" align="center">
@@ -126,6 +128,12 @@
           <el-select v-model="formNodeData.Attribute" style="width:100%">
             <el-option v-for="item in attributeList" :key="item.value" :label="item.text"
 								:value="item.value"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="类型" prop="NodeType">
+          <el-select v-model="formNodeData.NodeType" style="width:100%">
+            <el-option v-for="item in nodeTypeList" :key="item.Value" :label="item.Value"
+								:value="item.Value"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="前戳" prop="NodePreStamp">
@@ -199,6 +207,7 @@ export default {
         }
       ],
       spotList: [],
+      nodeTypeList:[],
       dialogFormVisible: false,
       dynamicValidateFormModal: false,
       dialogVisible: false,
@@ -251,7 +260,11 @@ export default {
     },
     handlerNode(row) {
       const id = row.Id
-      this.getData(id)
+      console.log(row);
+      if(row.DeviceType == 1)
+      {
+        this.getData(id);
+      }
     },
     getData(id) {
       this.$post("datalocation/data/getNode", {
@@ -315,9 +328,11 @@ export default {
       //编辑点位
       this.dialogTitle = "编辑点位";
       this.formNodeData = raw;
+      console.log(this.formNodeData);
       this.formType = "edit";
       this.dialogFormVisible = true;
       this.isLook = true;
+      this.getCurrNodeType(this.formNodeData.ParentId);
     },
     addNode() {
       this.formNodeData = {};
@@ -326,9 +341,27 @@ export default {
       this.dialogFormVisible = true;
       this.isLook = false;
     },
+    getCurrNodeType(deviceId){
+        this.$get("device/data/getDriveNodeType",{deviceId:deviceId}).then((res) => {
+        if (res.Successful) {
+              this.nodeTypeList = JSON.parse(res.Data);
+              console.log(this.nodeTypeList);
+        } else {
+         this.$Message.error({message:res.ErrorMessage, duration: 800});
+        }
+      });
+    },
     getChild(){
       var currNode = this.$refs['cascaderDevice'].getCheckedNodes()[0].value;
       this.formNodeData.ParentId=currNode;
+       this.$get("device/data/getDriveNodeType",{deviceId:this.formNodeData.ParentId}).then((res) => {
+        if (res.Successful) {
+              this.nodeTypeList = JSON.parse(res.Data);
+              console.log(this.nodeTypeList);
+        } else {
+         this.$Message.error({message:res.ErrorMessage, duration: 800});
+        }
+      });
     },
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
