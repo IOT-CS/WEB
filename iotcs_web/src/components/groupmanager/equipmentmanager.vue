@@ -155,7 +155,7 @@
 				<el-form-item label="卡槽" prop="SLOT">
 					<el-input v-model="SIEMENSS7DeviceConfig.SLOT"></el-input>
 				</el-form-item>
-				<el-form-item label="超时时间" prop="TimeOut">
+				<el-form-item label="超时时间(ms)" prop="TimeOut">
 					<el-input v-model="SIEMENSS7DeviceConfig.TimeOut"></el-input>
 				</el-form-item>
 				<el-form-item>
@@ -367,7 +367,27 @@
 					Description:[{
 						required:false
 						
-					}]
+					}],
+					IPAddress: [{
+						required: true,
+						message: "IP地址不能为空",
+						trigger: "blur"
+					}],
+					Port: [{
+						required: true,
+						message: "端口不能为空",
+						trigger: "blur"
+					}],
+					SLOT: [{
+						required: true,
+						message: "卡槽不能为空",
+						trigger: "blur"
+					}],
+					TimeOut:[{
+						required: true,
+						message: "超时时间不能为空",
+						trigger: "blur"
+					},{validator:this.isNum}]
 				},
 				DrivesType: [{
 						key: "OPC",
@@ -620,7 +640,7 @@
 								this.opcDeviceConfig.DeviceId= res.Data.DeviceId;
 								this.formType = "edit";
 							}
-						}else if(res.Data.DriveType == "ModbBus-TCP/UDP"){
+						}else if(res.Data.DriveType == "ModBus-TCP"){
 								this.dialogModBusTcpDeviceConfigVisible = true;
 							if(res.Data.ConfigJson == null){
 								this.modbusTcpUdpDeviceConfig.Id="";
@@ -660,7 +680,7 @@
 								this.modbusRTUDeviceConfig.DeviceId= res.Data.DeviceId;
 								this.formType = "edit";
 							}
-						}else if(res.Data.DriveType == "SIEMENS-S7"){
+						}else if(res.Data.DriveType == "SIEMENS-S7-1200" || res.Data.DriveType == "SIEMENS-S7-1500"){
 							this.dialogSIEMENSS7DeviceConfigVisible = true;
 							if(res.Data.ConfigJson == null){
 								this.SIEMENSS7DeviceConfig.Id="";

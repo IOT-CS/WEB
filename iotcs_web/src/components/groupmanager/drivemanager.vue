@@ -67,15 +67,15 @@
 					},
 					{
 						Id:"02",
-						driveType:"ModbBus-TCP/UDP"
+						driveType:"ModBus-TCP"
 					},
 					{
 						Id:"03",
-						driveType:"ModbBus-Serial"
+						driveType:"SIEMENS-S7-1200"
 					},
 					{
 						Id:"04",
-						driveType:"SIEMENS-S7"
+						driveType:"SIEMENS-S7-1500"
 					}],
 				formData: {
 					Id: "",

@@ -188,7 +188,13 @@ export default {
             required: true,
 						message: "Attribute不能为空",
 						trigger: "blur"
-          }]
+          }],
+          NodeType: [{
+						required: true,
+						message: "类型不能为空",
+						trigger: "blur"
+					}]
+      
 				},
       formNodeData: {},
       groupList: [],
