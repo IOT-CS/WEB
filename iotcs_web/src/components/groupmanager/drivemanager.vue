@@ -84,7 +84,11 @@
 					{
 						Id:"06",
 						driveType:"SIEMENS-S7-1500"
-					}],
+					},
+					{
+						Id:"05",
+						driveType:"BACnet/IP"
+					},],
 				formData: {
 					Id: "",
 					DriveName: "",

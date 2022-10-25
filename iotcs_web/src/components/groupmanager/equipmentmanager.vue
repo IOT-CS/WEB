@@ -259,7 +259,28 @@
 			</el-form>
 		</el-dialog>
 
-
+       <!--BACnet/IP -->
+		<el-dialog :visible.sync="dialogBACnetIPDeviceConfigVisible" v-dialogdrag :append-to-body="true"  width="520px"
+			:modal-append-to-body="false" :close-on-click-modal="false" :close-on-press-escape="false"
+			>
+			<div slot="title" class="header-title">
+				<span v-html="dialogTitle"></span>
+			</div>
+			<el-form :model="BACnetIPDeviceConfig"  :rules="rules" label-position="left" ref="formBACnetIPDeviceConfig" label-width="120px"
+				style="margin: 0 30px;" class="demo-form">
+				
+				<el-form-item label="设备ID" prop="IPAddress">
+					<el-input v-model="BACnetIPDeviceConfig.Host"></el-input>
+				</el-form-item>
+				<el-form-item label="端口" prop="Port">
+					<el-input v-model="BACnetIPDeviceConfig.Port"></el-input>
+				</el-form-item>
+				<el-form-item>
+					<el-button type="primary" @click="submitBACnetIPConfigForm('formBACnetIPDeviceConfig')">确定</el-button>
+					<el-button @click="closeDialog">取消</el-button>
+				</el-form-item>
+			</el-form>
+		</el-dialog>
 
 
 
@@ -283,6 +304,7 @@
 				dialogModBusTcpDeviceConfigVisible:false,
 				dialogModBusRTUDeviceConfigVisible:false,
 				dialogSIEMENSS7DeviceConfigVisible:false,
+				dialogBACnetIPDeviceConfigVisible:false,
 				deivceGroupInfo:{
 					ParentId:''
 				},
@@ -315,6 +337,10 @@
 					Port:"",
 					SLOT:"",
 					TimeOut:""
+				},
+				BACnetIPDeviceConfig:{
+					Host:"",
+					Port:""
 				},
 				formData: {
 					Id:"",
@@ -696,6 +722,20 @@
 								this.SIEMENSS7DeviceConfig.DeviceId= res.Data.DeviceId;
 								this.formType = "edit";
 							}
+						}else if(res.Data.DriveType == "BACnet/IP"){
+							this.dialogBACnetIPDeviceConfigVisible = true;
+							if(res.Data.ConfigJson == null){
+								this.BACnetIPDeviceConfig.Id="";
+								this.BACnetIPDeviceConfig.DeviceId=row.Id;
+								this.BACnetIPDeviceConfig.Host="";
+								this.BACnetIPDeviceConfig.Port="";
+								this.formType = "add";
+							}else{
+								this.BACnetIPDeviceConfig= JSON.parse(res.Data.ConfigJson);
+								this.BACnetIPDeviceConfig.Id=res.Data.Id;
+								this.BACnetIPDeviceConfig.DeviceId= res.Data.DeviceId;
+								this.formType = "edit";
+							}
 						}
 					}
 
@@ -891,7 +931,39 @@
 				})
 			},
 
+           submitBACnetIPConfigForm(formName){
+				this.$refs[formName].validate(valid => {
+					if (valid) {
+					if(this.formType == "add"){
+					this.$post("device/config/insert",{Id:this.getUUID(),
+													DeviceId:this.BACnetIPDeviceConfig.DeviceId,
+													ConfigJson:JSON.stringify({Host:this.BACnetIPDeviceConfig.Host,
+																			   Port:this.BACnetIPDeviceConfig.Port})}).then(res => {
+								if (res.Successful) {
+									this.closeDialog(); 
+									this.$Message.success({message: "数据配置成功！", duration: 800});
+								} else {
+									this.$Message.error({message:res.ErrorMessage, duration: 800});
+								}
+							});
 
+				}else{
+							this.$post("device/config/update",{Id:this.BACnetIPDeviceConfig.Id,
+													DeviceId:this.BACnetIPDeviceConfig.DeviceId,
+													ConfigJson:JSON.stringify({Host:this.BACnetIPDeviceConfig.Host,
+																			   Port:this.BACnetIPDeviceConfig.Port})}).then(res => {
+								if (res.Successful) {
+									this.closeDialog(); 
+									this.$Message.success({message: "数据配置成功！", duration: 800});
+								} else {
+									this.$Message.error({message:res.ErrorMessage, duration: 800});
+								}
+							});
+					}
+					}
+								
+				})
+			},
 
 			submitModBusRTUConfigForm(formName){
 				this.$refs[formName].validate(valid => {
@@ -1023,6 +1095,7 @@
 				this.dialogModBusTcpDeviceConfigVisible = false;
 				this.dialogModBusRTUDeviceConfigVisible = false;
 				this.dialogSIEMENSS7DeviceConfigVisible = false;
+				this.dialogBACnetIPDeviceConfigVisible = false;
 			},
 			closeDeviceGroupDialog(){
 				this.dialogOpcDeviceConfigVisible = false;
