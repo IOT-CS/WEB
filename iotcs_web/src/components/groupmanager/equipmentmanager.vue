@@ -178,10 +178,10 @@
 				<el-form-item label="名称" prop="Name">
 					<el-input v-model="modbusTcpUdpDeviceConfig.Name"></el-input>
 				</el-form-item>
-				<el-form-item label="Host" prop="Host">
+				<el-form-item label="地址" prop="Host">
 					<el-input v-model="modbusTcpUdpDeviceConfig.Host"></el-input>
 				</el-form-item>
-				<el-form-item label="Port" prop="Port">
+				<el-form-item label="端口" prop="Port">
 					<el-input v-model="modbusTcpUdpDeviceConfig.Port"></el-input>
 				</el-form-item>
 				<el-form-item label="超时(ms)" prop="TimeOut">
@@ -216,13 +216,13 @@
 				<el-form-item label="名称" prop="Name">
 					<el-input v-model="modbusRTUDeviceConfig.Name"></el-input>
 				</el-form-item>
-				<el-form-item label="Port" prop="Port">
+				<el-form-item label="端口" prop="Port">
 					<el-input v-model="modbusRTUDeviceConfig.Port"></el-input>
 				</el-form-item>
-				<el-form-item label="Baudrate" prop="Baudrate">
+				<el-form-item label="波特率" prop="Baudrate">
 					<el-input v-model="modbusRTUDeviceConfig.Baudrate"></el-input>
 				</el-form-item>
-				<el-form-item label="StopBits" prop="StopBits">
+				<el-form-item label="停止位" prop="StopBits">
 					<el-input v-model="modbusRTUDeviceConfig.StopBits"></el-input>
 				</el-form-item>
 				<el-form-item label="ByteSizes" prop="ByteSizes">
@@ -231,7 +231,7 @@
 							:value="item.name"></el-option>
 					</el-select>
 				</el-form-item>
-				<el-form-item label="Parity" prop="Parity">
+				<el-form-item label="校验位" prop="Parity">
 					<el-select v-model="modbusRTUDeviceConfig.Parity">
 						<el-option v-for="item in modbusRTUParity" :key="item.name" :label="item.name"
 							:value="item.name"></el-option>
@@ -640,7 +640,7 @@
 								this.opcDeviceConfig.DeviceId= res.Data.DeviceId;
 								this.formType = "edit";
 							}
-						}else if(res.Data.DriveType == "ModBus-TCP"){
+						}else if(res.Data.DriveType == "ModBus-TCP/UDP" || res.Data.DriveType == "Modbus-RTU-Over-TCP"){
 								this.dialogModBusTcpDeviceConfigVisible = true;
 							if(res.Data.ConfigJson == null){
 								this.modbusTcpUdpDeviceConfig.Id="";

@@ -67,14 +67,22 @@
 					},
 					{
 						Id:"02",
-						driveType:"ModBus-TCP"
+						driveType:"ModBus-TCP/UDP"
 					},
 					{
 						Id:"03",
-						driveType:"SIEMENS-S7-1200"
+						driveType:"Modbus-RTU-Over-TCP"
 					},
 					{
 						Id:"04",
+						driveType:"ModbBus-Serial"
+					},
+					{
+						Id:"05",
+						driveType:"SIEMENS-S7-1200"
+					},
+					{
+						Id:"06",
 						driveType:"SIEMENS-S7-1500"
 					}],
 				formData: {
